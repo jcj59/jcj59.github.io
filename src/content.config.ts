@@ -1,4 +1,5 @@
-import { defineCollection, z, type SchemaContext } from 'astro:content';
+import { defineCollection, type SchemaContext } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { site } from './site.config';
 
@@ -15,7 +16,7 @@ const schema = ({ image }: SchemaContext) =>
     imageAlt: z.string(),
     /** Optional looping video (path under public/) shown in place of the still image. */
     video: z.string().optional(),
-    links: z.array(z.object({ label: z.string(), href: z.string().url() })).default([]),
+    links: z.array(z.object({ label: z.string(), href: z.url() })).default([]),
     /** Lower sorts first. */
     order: z.number(),
     draft: z.boolean().default(false),
