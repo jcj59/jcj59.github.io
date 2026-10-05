@@ -166,10 +166,14 @@ const words = site.name.split(' ').map((w) => [...w].map((ch) => ({ ch, i: n++ }
   }
 
   /* ---------- About ---------- */
+  /* At least a screen tall, like the original, so the arrow can always scroll the hero fully
+     away — on a short page the hero would linger under the header on tall screens. */
   .about {
+    min-height: 100dvh;
     padding: clamp(5rem, 10vw, 8rem) var(--gutter) clamp(4rem, 8vw, 6rem);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
   }
   .about-inner {
