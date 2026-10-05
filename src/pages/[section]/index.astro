@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { getEntries } from '../../lib/entries';
+import { site, type Section } from '../../site.config';
+
+export function getStaticPaths() {
+  return site.sections.map((section) => ({ params: { section: section.id }, props: { section } }));
+}
+
+const { section } = Astro.props as { section: Section };
+const entries = await getEntries(section.id);
+---
+
+<Base title={section.title}>
+  <h1 class="page-title" data-reveal>{section.title}</h1>
+  <div class="grid">
+    {entries.map((entry, i) => <Card entry={entry} index={i} />)}
+  </div>
+</Base>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 24rem));
+    justify-content: center;
+    justify-items: center;
+    gap: 3.5rem 2.5rem;
+    max-width: 85rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter) 6rem;
+  }
+</style>

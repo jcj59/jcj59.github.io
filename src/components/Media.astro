@@ -1,0 +1,49 @@
+---
+import { Image, getImage } from 'astro:assets';
+import type { Entry } from '../lib/entries';
+
+interface Props {
+  entry: Entry;
+  /** Rendered width hint for responsive images. */
+  sizes: string;
+  widths: number[];
+  /** Above-the-fold media loads eagerly. */
+  eager?: boolean;
+}
+
+const { entry, sizes, widths, eager = false } = Astro.props;
+const { image, imageAlt, video } = entry.data;
+const poster = video ? await getImage({ src: image, width: 1200, format: 'webp' }) : undefined;
+---
+
+<div class="media" transition:name={`media-${entry.collection}-${entry.id}`}>
+  {
+    video ? (
+      <video
+        src={video}
+        poster={poster!.src}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload={eager ? 'auto' : 'metadata'}
+        aria-label={imageAlt}
+      />
+    ) : (
+      <Image src={image} alt={imageAlt} widths={widths} sizes={sizes} loading={eager ? 'eager' : 'lazy'} />
+    )
+  }
+</div>
+
+<style>
+  .media {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: var(--paper-dim);
+  }
+  .media :is(img, video) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

@@ -1,0 +1,313 @@
+---
+import { site } from '../site.config';
+import Icon from './Icon.astro';
+
+const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => ({ label: s.title, href: `/${s.id}` }))];
+---
+
+<header class="site-header" transition:persist="site-header" data-header>
+  <nav class="bar" aria-label="Main">
+    <ul class="links left">
+      {left.map((l) => <li><a href={l.href} data-nav>{l.label}</a></li>)}
+    </ul>
+
+    <a href="/" class="logo" aria-label={`${site.name} — home`}>{site.name}</a>
+
+    <ul class="links right">
+      <li><a href={site.resume.href} target="_blank" rel="noopener">{site.resume.label}</a></li>
+      {
+        site.socials.map((s) => (
+          <li>
+            <a href={s.href} target="_blank" rel="noopener noreferrer">
+              {s.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <span class="visually-hidden">Menu</span>
+      <span class="bars" aria-hidden="true"><span></span><span></span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu inert>
+    <ul>
+      {
+        left.map((l, i) => (
+          <li style={`--i:${i}`}>
+            <a href={l.href} data-nav>
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+      <li style={`--i:${left.length}`}>
+        <a href={site.resume.href} target="_blank" rel="noopener">{site.resume.label}</a>
+      </li>
+    </ul>
+    <div class="mobile-socials" style={`--i:${left.length + 1}`}>
+      {
+        site.socials.map((s) => (
+          <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
+            <Icon name={s.icon} />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    height: var(--header-h);
+    background: var(--paper);
+    border-bottom: 1px solid transparent;
+    transition:
+      translate 0.5s var(--ease-out),
+      border-color 0.3s ease;
+  }
+  .site-header.is-scrolled {
+    border-bottom-color: var(--line);
+  }
+  .site-header.is-hidden {
+    translate: 0 -100%;
+  }
+
+  .bar {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding-inline: calc(var(--gutter) + 0.5rem);
+  }
+
+  .links {
+    display: flex;
+    gap: clamp(1rem, 2.4vw, 2rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .right {
+    justify-content: flex-end;
+  }
+  .links a {
+    font-family: var(--font-label);
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    padding-block: 0.4rem;
+    transition: color 0.3s ease;
+  }
+  .links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--accent);
+    scale: 0 1;
+    transform-origin: right;
+    transition: scale 0.45s var(--ease-out);
+  }
+  .links a:hover,
+  .links a[aria-current='page'] {
+    color: var(--accent);
+  }
+  .links a:hover::after,
+  .links a[aria-current='page']::after {
+    scale: 1 1;
+    transform-origin: left;
+  }
+
+  .logo {
+    font-family: var(--font-script);
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    text-decoration: none;
+    line-height: 1;
+    transition: color 0.3s ease;
+  }
+  .logo:hover {
+    color: var(--accent);
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+
+  @media (max-width: 820px) {
+    .bar {
+      grid-template-columns: 1fr auto;
+    }
+    .links {
+      display: none;
+    }
+    .logo {
+      position: relative;
+      z-index: 2;
+      transition: color 0.4s ease;
+    }
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 2;
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-right: -0.5rem;
+      border: 0;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .bars {
+      display: grid;
+      gap: 7px;
+      width: 26px;
+    }
+    .bars span {
+      display: block;
+      height: 1.5px;
+      background: currentColor;
+      transition:
+        translate 0.4s var(--ease-out),
+        rotate 0.4s var(--ease-out);
+    }
+
+    .mobile-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2.5rem;
+      position: fixed;
+      inset: 0;
+      height: 100dvh;
+      padding: var(--header-h) calc(var(--gutter) + 0.5rem);
+      background: var(--ink);
+      color: var(--paper);
+      clip-path: circle(0% at calc(100% - 2.6rem) 2.75rem);
+      transition: clip-path 0.7s var(--ease-in-out);
+    }
+    .mobile-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+    .mobile-menu a {
+      text-decoration: none;
+    }
+    .mobile-menu li a {
+      font-family: var(--font-serif);
+      font-size: clamp(2.25rem, 10vw, 3rem);
+      line-height: 1.2;
+    }
+    .mobile-menu li,
+    .mobile-socials {
+      opacity: 0;
+      translate: 0 1.25rem;
+      transition:
+        opacity 0.5s var(--ease-out),
+        translate 0.5s var(--ease-out);
+    }
+    .mobile-socials {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .site-header.menu-open {
+      translate: none;
+      background: transparent;
+      border-bottom-color: transparent;
+      color: var(--paper);
+    }
+    .menu-open .mobile-menu {
+      clip-path: circle(150% at calc(100% - 2.6rem) 2.75rem);
+    }
+    .menu-open .mobile-menu li,
+    .menu-open .mobile-socials {
+      opacity: 1;
+      translate: 0 0;
+      transition-delay: calc(0.25s + var(--i) * 0.06s);
+    }
+    .menu-open .bars span:first-child {
+      translate: 0 4.25px;
+      rotate: 45deg;
+    }
+    .menu-open .bars span:last-child {
+      translate: 0 -4.25px;
+      rotate: -45deg;
+    }
+  }
+</style>
+
+<script>
+  // The header is persisted across client-side navigations, so this module runs once.
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = header.querySelector<HTMLElement>('[data-mobile-menu]')!;
+
+  function setMenu(open: boolean) {
+    header.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    menu.inert = !open;
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  }
+  toggle.addEventListener('click', () => setMenu(!header.classList.contains('menu-open')));
+  menu.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setMenu(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setMenu(false);
+  });
+
+  // Hide while scrolling down, reveal on scroll up or once scrolling stops.
+  let lastY = scrollY;
+  let ticking = false;
+  let idle: number | undefined;
+  addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = scrollY;
+        const goingDown = y > lastY && y > 120;
+        header.classList.toggle('is-hidden', goingDown && !header.classList.contains('menu-open'));
+        header.classList.toggle('is-scrolled', y > 8);
+        lastY = y;
+        ticking = false;
+      });
+      clearTimeout(idle);
+      idle = window.setTimeout(() => header.classList.remove('is-hidden'), 700);
+    },
+    { passive: true },
+  );
+
+  // Mark the current section's link.
+  document.addEventListener('astro:page-load', () => {
+    const path = location.pathname.replace(/\/$/, '') || '/';
+    header.querySelectorAll<HTMLAnchorElement>('a[data-nav]').forEach((a) => {
+      const href = a.getAttribute('href')!;
+      const active = href !== '/#about' && (path === href || path.startsWith(href + '/'));
+      if (active) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    header.classList.remove('is-hidden');
+    setMenu(false);
+  });
+</script>

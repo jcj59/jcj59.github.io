@@ -1,0 +1,165 @@
+/* Palette tokens (--ink, --paper, --accent, ...) are injected from site.config.ts in Base.astro. */
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk Pro Ext';
+  src: url('/fonts/AkzidenzGroteskPro-Ext.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sainte Colombe';
+  src: url('/fonts/SainteColombe-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Rosmerta';
+  src: url('/fonts/Rosmerta.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  --font-label: 'Akzidenz-Grotesk Pro Ext', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Sainte Colombe', 'Cormorant Garamond', Georgia, serif;
+  --font-script: 'Rosmerta', 'Snell Roundhand', cursive;
+
+  --header-h: 5.5rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: var(--header-h);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Small-caps label links ("EXPLORE PROJECTS", "LEARN MORE"): an underline that draws in on hover. */
+.label-link {
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-bottom: 3px;
+  background:
+    linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat,
+    linear-gradient(var(--link-hover, var(--accent)), var(--link-hover, var(--accent))) left bottom / 0% 1px no-repeat;
+  transition:
+    color 0.35s var(--ease-out),
+    background-size 0.45s var(--ease-out);
+}
+.label-link:hover {
+  color: var(--link-hover, var(--accent));
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+
+.page-title {
+  font-size: clamp(2.5rem, 6vw, 3.75rem);
+  text-align: center;
+  padding-top: calc(var(--header-h) + 2.5rem);
+  margin-bottom: 2.5rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Scroll reveal ----------
+   Elements with [data-reveal] fade up as they enter the viewport (see Base.astro).
+   Gated on html.js so content is visible without JavaScript. --reveal-delay staggers siblings. */
+.js [data-reveal] {
+  opacity: 0;
+  translate: 0 28px;
+  transition:
+    opacity 0.9s var(--ease-out) var(--reveal-delay, 0ms),
+    translate 0.9s var(--ease-out) var(--reveal-delay, 0ms);
+}
+.js [data-reveal].is-revealed {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ---------- Page transitions ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease-in-out);
+}
+::view-transition-group(*) {
+  animation-duration: 0.6s;
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    translate: none;
+  }
+}
