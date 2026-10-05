@@ -41,8 +41,11 @@ Create `src/content/projects/<slug>.md`. The frontmatter schema is in `src/conte
 
 ## Deploy
 
-The site is a Cloudflare Worker that serves `dist/` as static assets (`wrangler.jsonc`).
+The site is a Cloudflare Worker that serves `dist/` as static assets (`wrangler.jsonc`), deployed by
+Cloudflare Workers Builds:
 
-```bash
-npm run deploy    # build, then wrangler deploy
-```
+- A push to `main` builds (`npm run build`) and deploys (`npx wrangler deploy`).
+- Any other branch gets a preview URL (`npx wrangler versions upload`), linked from its PR.
+- Node 22 is pinned in `.node-version` so Cloudflare's build matches local.
+
+Manual fallback: `npm run deploy` builds and deploys from your machine.
