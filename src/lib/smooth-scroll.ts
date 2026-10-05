@@ -37,7 +37,8 @@ function scrollToHash(hash: string): boolean {
 // "/research", "/research.html", and "/research/" are the same page.
 const normalize = (path: string) => path.replace(/(index)?\.html$/, '').replace(/\/$/, '') || '/';
 
-let pendingHash: string | null = null;
+// Section to glide to once the navigation to its page lands.
+let pending: { path: string; hash: string } | null = null;
 
 // Capture phase, so this runs before the view-transition router's own click handling.
 document.addEventListener(
@@ -53,7 +54,7 @@ document.addEventListener(
       if (url.hash ? scrollToHash(url.hash) : (scrollToY(0), true)) e.preventDefault();
     } else if (url.hash) {
       e.preventDefault();
-      pendingHash = url.hash;
+      pending = { path: normalize(url.pathname), hash: url.hash };
       navigate(url.pathname);
     }
   },
@@ -61,9 +62,10 @@ document.addEventListener(
 );
 
 document.addEventListener('astro:page-load', () => {
-  if (!pendingHash) return;
-  const hash = pendingHash;
-  pendingHash = null;
+  const target = pending;
+  pending = null;
+  // Only on the page the link pointed at: if that navigation was abandoned for another, drop it.
+  if (!target || normalize(location.pathname) !== target.path) return;
   // Let the incoming page settle before gliding down to the section.
-  setTimeout(() => scrollToHash(hash), 250);
+  setTimeout(() => scrollToHash(target.hash), 250);
 });
