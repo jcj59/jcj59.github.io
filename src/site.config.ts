@@ -17,7 +17,7 @@ export interface Section {
 
 export const site = {
   name: 'Jack Jansons',
-  url: 'https://jcj59.github.io',
+  url: 'https://jackjansons.dev',
   description:
     'Jack Jansons — software engineer at Meta. Projects and research in machine learning, optimization, and software.',
 
