@@ -1,6 +1,7 @@
 # jackjansons — personal website
 
-Static site built with [Astro](https://astro.build). Live at https://jcj59.github.io.
+Static site built with [Astro](https://astro.build), served by Cloudflare Workers.
+Live at https://jackjansons-dev.hf-worker.workers.dev (moving to https://jackjansons.dev).
 
 ```bash
 npm install
@@ -37,4 +38,8 @@ Create `src/content/projects/<slug>.md`. The frontmatter schema is in `src/conte
 
 ## Deploy
 
-Pushing to `main` builds and deploys to GitHub Pages via `.github/workflows/deploy.yml`.
+The site is a Cloudflare Worker that serves `dist/` as static assets (`wrangler.jsonc`).
+
+```bash
+npm run deploy    # build, then wrangler deploy
+```
