@@ -34,6 +34,9 @@ Create `src/content/projects/<slug>.md`. The frontmatter schema is in `src/conte
   morphs into the detail page's hero image.
 - Elements with `data-reveal` fade up when they scroll into view (`src/layouts/Base.astro`).
 - Hero letters, the drifting background light, and the header's hide-on-scroll are plain CSS/TS.
+- The header stays navy over any `[data-ink-hero]` section and turns white once past it
+  (`src/components/Header.astro`); same-page and cross-page `#section` links ease-scroll
+  (`src/lib/smooth-scroll.ts`).
 - Everything respects `prefers-reduced-motion`.
 
 ## Deploy
