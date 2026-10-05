@@ -66,13 +66,32 @@ const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => (
     z-index: 100;
     height: var(--header-h);
     background: var(--paper);
+    color: var(--ink);
     border-bottom: 1px solid transparent;
     transition:
       translate 0.5s var(--ease-out),
+      background-color 0.3s ease,
+      color 0.3s ease,
       border-color 0.3s ease;
   }
   .site-header.is-scrolled {
     border-bottom-color: var(--line);
+  }
+  /* Over a navy hero the header takes the hero's color, and turns white while hovered. */
+  .site-header.on-ink {
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom-color: transparent;
+  }
+  @media (hover: hover) {
+    .site-header.on-ink:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
+  }
+  .site-header.on-ink:focus-within:has(:focus-visible) {
+    background: var(--paper);
+    color: var(--ink);
   }
   .site-header.is-hidden {
     translate: 0 -100%;
@@ -297,6 +316,22 @@ const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => (
     },
     { passive: true },
   );
+
+  // Navy while the header sits over a navy hero ([data-ink-hero]); white once scrolled past it.
+  let hero: HTMLElement | null = null;
+  function updateTone() {
+    const overHero = hero !== null && hero.getBoundingClientRect().bottom > header.offsetHeight;
+    header.classList.toggle('on-ink', overHero);
+  }
+  function findHero() {
+    hero = document.querySelector<HTMLElement>('[data-ink-hero]');
+    updateTone();
+  }
+  addEventListener('scroll', () => requestAnimationFrame(updateTone), { passive: true });
+  addEventListener('resize', updateTone, { passive: true });
+  // after-swap runs before the new page paints, so the header never shows the old page's tone.
+  document.addEventListener('astro:after-swap', findHero);
+  findHero();
 
   // Mark the current section's link.
   document.addEventListener('astro:page-load', () => {
