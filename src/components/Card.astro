@@ -1,0 +1,65 @@
+---
+import Media from './Media.astro';
+import type { Entry } from '../lib/entries';
+
+interface Props {
+  entry: Entry;
+  index: number;
+}
+
+const { entry, index } = Astro.props;
+const href = `/${entry.collection}/${entry.id}`;
+---
+
+<article class="card" data-reveal style={`--reveal-delay:${(index % 3) * 110}ms`}>
+  <a href={href} class="image-link" tabindex="-1" aria-hidden="true">
+    <Media entry={entry} widths={[400, 800, 1200]} sizes="(max-width: 700px) 92vw, 400px" />
+  </a>
+  <h2><a href={href}>{entry.data.title}</a></h2>
+  <p>{entry.data.summary}</p>
+  <a href={href} class="label-link" aria-label={`Learn more about ${entry.data.title}`}>Learn more</a>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 24rem;
+  }
+  .image-link {
+    display: block;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+  .image-link :global(.media :is(img, video)) {
+    transition:
+      scale 0.9s var(--ease-out),
+      filter 0.9s var(--ease-out);
+  }
+  .card:hover .image-link :global(.media :is(img, video)) {
+    scale: 1.06;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+    text-wrap: balance;
+  }
+  h2 a {
+    text-decoration: none;
+  }
+  p {
+    margin: 0 0 1rem;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .label-link {
+    color: var(--accent);
+    --link-hover: var(--accent-deep);
+    margin-top: auto;
+  }
+</style>

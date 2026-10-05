@@ -1,0 +1,51 @@
+---
+import { site } from '../site.config';
+import Icon from './Icon.astro';
+---
+
+<footer class="site-footer">
+  <p>&copy; {new Date().getFullYear()} {site.name}</p>
+  <div class="social">
+    <span>Follow my work</span>
+    {
+      site.socials.map((s) => (
+        <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}>
+          <Icon name={s.icon} />
+        </a>
+      ))
+    }
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    padding: 0.9rem var(--gutter);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.85rem;
+  }
+  p {
+    margin: 0;
+  }
+  .social {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  a {
+    display: inline-flex;
+    font-size: 1.05rem;
+    transition:
+      color 0.3s ease,
+      translate 0.3s var(--ease-out);
+  }
+  a:hover {
+    color: var(--accent-on-ink);
+    translate: 0 -2px;
+  }
+</style>

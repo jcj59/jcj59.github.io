@@ -1,0 +1,154 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Media from '../../components/Media.astro';
+import Icon from '../../components/Icon.astro';
+import { getEntries, type Entry } from '../../lib/entries';
+import { site, type Section } from '../../site.config';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const section of site.sections) {
+    for (const entry of await getEntries(section.id)) {
+      paths.push({ params: { section: section.id, slug: entry.id }, props: { section, entry } });
+    }
+  }
+  return paths;
+}
+
+const { section, entry } = Astro.props as { section: Section; entry: Entry };
+const { title, tagline, context, links } = entry.data;
+const { Content } = await render(entry);
+const hasBody = Boolean(entry.body?.trim());
+---
+
+<Base title={title} description={tagline}>
+  <section class="hero">
+    <a href={`/${section.id}`} class="back label-link">← {section.title}</a>
+    <h1 class="title">{title}</h1>
+    <p class="tagline">{tagline}</p>
+    {context && <p class="context">{context}</p>}
+    {
+      links.length > 0 && (
+        <div class="links">
+          {links.map((l) => (
+            <a href={l.href} class="label-link" target="_blank" rel="noopener noreferrer">
+              {l.label} <Icon name="arrow-up-right" />
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </section>
+
+  <div class="figure" data-reveal>
+    <Media entry={entry} eager widths={[800, 1200, 1800]} sizes="(max-width: 1100px) 92vw, 1000px" />
+  </div>
+
+  {
+    hasBody && (
+      <article class="prose" data-reveal>
+        <Content />
+      </article>
+    )
+  }
+</Base>
+
+<style>
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    text-align: center;
+    padding: calc(var(--header-h) + clamp(3rem, 9vw, 6rem)) var(--gutter) clamp(9rem, 16vw, 12rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .back {
+    --link-hover: var(--accent-on-ink);
+    margin-bottom: 2rem;
+    opacity: 0.75;
+  }
+  .title {
+    font-size: clamp(2.5rem, 7vw, 4.75rem);
+    max-width: 18ch;
+    text-wrap: balance;
+    margin-bottom: 1.5rem;
+  }
+  .tagline,
+  .context {
+    margin: 0;
+    max-width: 46rem;
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    line-height: 1.55;
+    text-wrap: balance;
+  }
+  .context {
+    margin-top: 0.4rem;
+    opacity: 0.7;
+    font-size: 1rem;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 3rem;
+    margin-top: 2.5rem;
+  }
+  .links a {
+    --link-hover: var(--accent-on-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* Hero entrance: each line rises in turn. */
+  .hero > * {
+    animation: rise 1s var(--ease-out) both;
+  }
+  .hero > :nth-child(2) { animation-delay: 0.08s; }
+  .hero > :nth-child(3) { animation-delay: 0.18s; }
+  .hero > :nth-child(4) { animation-delay: 0.26s; }
+  .hero > :nth-child(5) { animation-delay: 0.34s; }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
+  }
+
+  .figure {
+    max-width: 62.5rem;
+    margin: clamp(-9rem, -12vw, -6rem) auto 0;
+    padding-inline: var(--gutter);
+  }
+  .figure :global(.media) {
+    box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.35);
+  }
+
+  .prose {
+    max-width: 40rem;
+    margin: 4rem auto 6rem;
+    padding-inline: var(--gutter);
+    font-size: 1.15rem;
+  }
+  .prose :global(p) {
+    margin: 0 0 1.25em;
+  }
+  .prose :global(h2) {
+    font-size: 1.9rem;
+    margin: 2em 0 0.6em;
+  }
+  .prose :global(a) {
+    color: var(--accent-deep);
+    text-underline-offset: 3px;
+  }
+  .prose :global(.footnotes) {
+    margin-top: 3rem;
+    font-size: 0.95rem;
+    border-top: 1px solid var(--line);
+  }
+  .figure:last-child {
+    margin-bottom: 6rem;
+  }
+</style>
