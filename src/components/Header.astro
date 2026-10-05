@@ -77,11 +77,18 @@ const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => (
   .site-header.is-scrolled {
     border-bottom-color: var(--line);
   }
-  /* Over a navy hero the header takes the hero's color, and turns white while hovered. */
+  /* Over an ink hero the header is see-through, so the hero (and its drifting light) runs
+     behind it with no seam. Once content scrolls underneath, a blur keeps the links legible.
+     Hover still turns it white, as on the original site. */
   .site-header.on-ink {
-    background: var(--ink);
+    background: transparent;
     color: var(--paper);
     border-bottom-color: transparent;
+  }
+  .site-header.on-ink.is-scrolled {
+    /* Unprefixed only: the CSS minifier adds -webkit- itself, and drops the standard
+       property if both are written by hand. */
+    backdrop-filter: blur(14px);
   }
   @media (hover: hover) {
     .site-header.on-ink:hover {
