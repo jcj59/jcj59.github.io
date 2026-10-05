@@ -46,7 +46,7 @@ The site is a Cloudflare Worker that serves `dist/` as static assets (`wrangler.
 Cloudflare Workers Builds:
 
 - A push to `main` builds (`npm run build`) and deploys (`npx wrangler deploy`).
-- Any other branch gets a preview URL (`npx wrangler versions upload`), linked from its PR.
+- Any other branch gets a preview URL (`npx wrangler preview`, which needs the `previews` block in `wrangler.jsonc`), linked from its PR.
 - Node 22 is pinned in `.node-version` so Cloudflare's build matches local.
 
 Manual fallback: `npm run deploy` builds and deploys from your machine.
