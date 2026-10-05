@@ -67,15 +67,10 @@ const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => (
     height: var(--header-h);
     background: var(--paper);
     color: var(--ink);
-    border-bottom: 1px solid transparent;
     transition:
       translate 0.5s var(--ease-out),
       background-color 0.3s ease,
-      color 0.3s ease,
-      border-color 0.3s ease;
-  }
-  .site-header.is-scrolled {
-    border-bottom-color: var(--line);
+      color 0.3s ease;
   }
   /* Over an ink hero the header is see-through, so the hero (and its drifting light) runs
      behind it with no seam. Once content scrolls underneath, a blur keeps the links legible.
@@ -83,7 +78,6 @@ const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => (
   .site-header.on-ink {
     background: transparent;
     color: var(--paper);
-    border-bottom-color: transparent;
   }
   .site-header.on-ink.is-scrolled {
     /* Unprefixed only: the CSS minifier adds -webkit- itself, and drops the standard
@@ -258,7 +252,6 @@ const left = [{ label: 'About', href: '/#about' }, ...site.sections.map((s) => (
     .site-header.menu-open {
       translate: none;
       background: transparent;
-      border-bottom-color: transparent;
       color: var(--paper);
     }
     .menu-open .mobile-menu {
